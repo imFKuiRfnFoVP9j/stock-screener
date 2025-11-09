@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Stock Screener Demo</title>
+    <style>
+        :root {
+            color-scheme: light;
+            font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+            background: #0b1120;
+            color: #f8fafc;
+        }
+
+        body {
+            margin: 0;
+            padding: 32px;
+            background: radial-gradient(circle at top, #1e293b, #0f172a 60%);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.25rem;
+            letter-spacing: 0.05em;
+            margin-bottom: 24px;
+        }
+
+        .layout {
+            display: grid;
+            gap: 24px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            margin-bottom: 32px;
+        }
+
+        .card {
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 16px;
+            padding: 20px 24px;
+            box-shadow: 0 24px 60px rgba(15, 23, 42, 0.45);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.35rem;
+            color: #38bdf8;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.875rem;
+            background: rgba(56, 189, 248, 0.12);
+            color: #38bdf8;
+            border-radius: 9999px;
+            padding: 4px 12px;
+            margin-bottom: 12px;
+        }
+
+        ul.criteria {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            gap: 8px;
+        }
+
+        ul.criteria li::before {
+            content: "•";
+            color: #fbbf24;
+            margin-right: 12px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            overflow: hidden;
+            border-radius: 16px;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(148, 163, 184, 0.16);
+            box-shadow: 0 24px 60px rgba(15, 23, 42, 0.45);
+        }
+
+        thead {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.16), rgba(59, 130, 246, 0.08));
+        }
+
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 0.95rem;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+        }
+
+        th {
+            font-weight: 600;
+            color: #cbd5f5;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background: rgba(51, 65, 85, 0.35);
+        }
+
+        .muted {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            text-align: center;
+            margin-top: 16px;
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.75rem;
+            }
+
+            th, td {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Stock Screener Demo</h1>
+
+    <div class="layout">
+        {% for screen in screens %}
+            <section class="card">
+                <h2>{{ screen.title }}</h2>
+                <div class="badge">{{ screen.match_count }} matches</div>
+                <ul class="criteria">
+                    {% for item in screen.criteria %}
+                        <li>{{ item }}</li>
+                    {% endfor %}
+                </ul>
+            </section>
+        {% endfor %}
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Symbol</th>
+                <th>Name</th>
+                <th>Exchange</th>
+                <th>Market Cap ($M)</th>
+                <th>EPS 5Y %</th>
+                <th>P/E</th>
+                <th>PEG</th>
+                <th>Debt/Equity</th>
+                <th>Industry</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for stock in stocks %}
+                <tr>
+                    <td><strong>{{ stock.symbol }}</strong></td>
+                    <td>{{ stock.name }}</td>
+                    <td>{{ stock.exchange }}</td>
+                    <td style="text-align: right;">{{ '{:,.0f}'.format(stock.market_cap_millions) }}</td>
+                    <td style="text-align: right;">{{ '{:.1f}'.format(stock.eps_growth_5y) }}</td>
+                    <td style="text-align: right;">{{ '{:.1f}'.format(stock.pe_ratio) }}</td>
+                    <td style="text-align: right;">{{ '{:.2f}'.format(stock.peg_ratio) }}</td>
+                    <td style="text-align: right;">{{ '{:.1f}'.format(stock.debt_to_equity) }}</td>
+                    <td>{{ stock.industry }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p class="muted">Use this demo as a starting point for real market data integrations.</p>
+</body>
+</html>
